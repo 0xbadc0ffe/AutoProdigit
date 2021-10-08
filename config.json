@@ -245,14 +245,8 @@
                     "--:--"
                 ]
             },
-            "addr": {
-                "addr": "Matematica G. Castelnuovo Scienze Matematiche Fisiche e Naturali",
-                "street-addr": "Piazzale Aldo Moro, 2"
-            },
-            "street-addr": {
-                "addr": "Matematica G. Castelnuovo Scienze Matematiche Fisiche e Naturali",
-                "street-addr": "Piazzale Aldo Moro, 2"
-            }
+            "addr": "Matematica G. Castelnuovo Scienze Matematiche Fisiche e Naturali",
+            "street-addr": "Piazzale Aldo Moro, 2"
         },
         {
             "classroom": "",
