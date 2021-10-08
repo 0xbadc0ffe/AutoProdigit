@@ -105,14 +105,14 @@ or, if you have also `python2` on your OS:
         If needed, I will add more of them in the default `config.json`.<br /> <br />
         As for multiple reservation on the same day for the same class, you need to set multiple reservations (like with original Prodigit) into the `config.json` file, 
         this could change in future updates of this repository.
-        
-        
-        
- 
- 
+        <br /><br />
+        Please note that the `week` field automatically updates itself to the following monday when needed, so there's no need to touch it each week. 
+        Once you have setup properly the `config.json` just run the program each weekend and you'll be fine.
+
         
  ## Usage - Italian
  
+ **TODO** è.è
  
  
        
