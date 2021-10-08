@@ -19,7 +19,7 @@ First of all, you have to download [python3](https://www.python.org/downloads/).
        sudo apt update 
        sudo apt install python3
        
-After the installation, you can install also all the needed libraries. For this purpose, use the the following command on your bash/command prompt:
+After the installation, you can also install all the needed libraries. For this purpose, use the following command on your bash/command prompt:
 
 
       pip3 install -r requirements.txt
