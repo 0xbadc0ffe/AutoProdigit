@@ -25,7 +25,7 @@ After the installation, you can install also all the needed libraries. For this 
       pip3 install -r requirements.txt
 
 
-Then, to execute the python script you have to use the command into your bash/command prompt:
+Then, to execute the python script you have to use this command into your bash/command prompt:
 
        
        python PROdigit.py
