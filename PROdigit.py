@@ -30,7 +30,7 @@ def makequery(personal_data, booking_data):
 
     sched = bd['hours']
 
-    click = "C12585E7003519C8.1f1b81c1aaf9c55ac12586e200734697/$Body/2.2"
+    click = "C12585E7003519C8.172ed58cde110161c12585f80042d28d/$Body/1.1EEE"
     iddoc = "3C0137D0723E44F6C1258767005FCAB6"
     query_form = {
         "__Click":f"{click}",
@@ -324,7 +324,7 @@ if __name__=="__main__":
                     print(f"\nReservation successfully made for {booking_data['classroom']} at {booking_data['building']}\n")
 
                 elif "Sovrapposizione in data" in r.text:
-                    print(f"\nReservation already present for {booking_data['classroom']} at {booking_data['building']}\n")
+                    print(f"\nReservation already present (or partially) for {booking_data['classroom']} at {booking_data['building']}\n")
 
                 else:
                     print(f"\nError in reservation for {booking_data['classroom']} at {booking_data['building']}\n")
