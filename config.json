@@ -1,20 +1,12 @@
 {
     "personal_data": {
-        "name": "MARIO",
-        "surname": "ROSSI",
-        "CF": "RSSMRA97D14H501H",
-        "email": "rossi.9999999@studenti.uniroma1.it",
-        "matricola": "9999999",
-        "range-mat": "",
+        "matricola": "",
         "password": ""
     },
-	
     "booking_list": [
         {
             "classroom": "AULA A3",
             "building": "RM102",
-            "week": "11/10/2021",
-            "siram": "RM102-E01PR1L008",
             "hours": {
                 "lun": [
                     "--:--",
@@ -40,15 +32,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Via Ariosto",
-            "street-addr": "Via Ariosto, 25"
+            }
         },
         {
             "classroom": "AULA A 4",
             "building": "RM102",
-            "week": "11/10/2021",
-            "siram": "",
             "hours": {
                 "lun": [
                     "14:00",
@@ -74,15 +62,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Via Ariosto",
-            "street-addr": "Via Ariosto, 25"
+            }
         },
         {
             "classroom": "AULA A 5",
             "building": "RM102",
-            "week": "11/10/2021",
-            "siram": "RM102-E01PR1L012",
             "hours": {
                 "lun": [
                     "--:--",
@@ -108,15 +92,41 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Via Ariosto",
-            "street-addr": "Via Ariosto, 25"
+            }
         },
         {
             "classroom": "AULA B2",
             "building": "RM102",
-            "week": "11/10/2021",
-            "siram": "RM102-E01PR1L035",
+            "hours": {
+                "lun": [
+                    "11:00",
+                    "13:00"
+                ],
+                "mar": [
+                    "11:00",
+                    "13:00"
+                ],
+                "mer": [
+                    "--:--",
+                    "--:--"
+                ],
+                "gio": [
+                    "9:00",
+                    "11:00"
+                ],
+                "ven": [
+                    "--:--",
+                    "--:--"
+                ],
+                "sab": [
+                    "--:--",
+                    "--:--"
+                ]
+            }
+        },
+        {
+            "classroom": "AULA B2",
+            "building": "RM102",
             "hours": {
                 "lun": [
                     "--:--",
@@ -142,15 +152,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Via Ariosto",
-            "street-addr": "Via Ariosto, 25"
+            }
         },
         {
             "classroom": "AULA L41",
             "building": "RM041",
-            "week": "11/10/2021",
-            "siram": "RM041-E01PTEL003",
             "hours": {
                 "lun": [
                     "9:00",
@@ -176,15 +182,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Centro Studenti",
-            "street-addr": "Via delle Sette Sale, 29"
+            }
         },
         {
             "classroom": "AULA 29",
             "building": "RM031",
-            "week": "11/10/2021",
-            "siram": "RM031-E01PA2L047",
             "hours": {
                 "lun": [
                     "--:--",
@@ -210,15 +212,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "S. Pietro in Vincoli - Edificio A",
-            "street-addr": "Via Eudossiana, 18"
+            }
         },
         {
             "classroom": "AULA G",
             "building": "CU006",
-            "week": "11/10/2021",
-            "siram": "CU006-E01PTEL020",
             "hours": {
                 "lun": [
                     "14:00",
@@ -244,15 +242,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "Matematica G. Castelnuovo Scienze Matematiche Fisiche e Naturali",
-            "street-addr": "Piazzale Aldo Moro, 2"
+            }
         },
         {
             "classroom": "",
             "building": "",
-            "week": "",
-            "siram": "",
             "hours": {
                 "lun": [
                     "--:--",
@@ -278,15 +272,11 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "",
-            "street-addr": ""
+            }
         },
         {
             "classroom": "",
             "building": "",
-            "week": "",
-            "siram": "",
             "hours": {
                 "lun": [
                     "--:--",
@@ -312,82 +302,8 @@
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "",
-            "street-addr": ""
+            }
         }
-    ],
-    
-	"siram_codes": {
-        "RM102#AULA MAGNA": "RM102-E01PR1L001",
-        "RM102#AULA A1": "RM102-PR1L006",
-        "RM102#AULA A2": "RM102-E01PR1L007",
-        "RM102#AULA A3": "RM102-E01PR1L008",
-        "RM102#AULA A 4": "RM102-E01PR1L009",
-        "RM102#AULA A 5": "RM102-E01PR1L012",
-        "RM102#AULA A6": "RM102-E01PR1L013",
-        "RM102#AULA A7": "RM102-E01PR1L015",
-        "RM102#AULA B2": "RM102-E01PR1L035",
-        "CU006#AULA G": "CU006-E01PTEL020",
-        "RM041#AULA L41": "RM041-E01PTEL003",
-        "RM031#AULA 29": "RM031-E01PA2L047",
-        "RM031#AULA 1 - ANTONIO RUBERTI": "RM031-E01P01L088_PA1L002",
-        "RM031#AULA 10": "RM031-E01PA1L017",
-        "RM031#AULA 11": "RM031-E01PA1L016",
-        "RM031#AULA 12": "RM031-E01PA1L007",
-        "RM031#AULA 13": "RM031-E01PTEL095",
-        "RM031#AULA 15": "RM031-E01P02L047",
-        "RM031#AULA 16": "RM031-E01P01L028",
-        "RM031#AULA 17": "RM031-E01P01L027",
-        "RM031#AULA 20": "RM031-E01P02L021",
-        "RM031#AULA 21": "RM031-E01P02L007",
-        "RM031#AULA 22": "RM031-E01P02L006",
-        "RM031#AULA 23": "RM031-E01P02L005",
-        "RM031#AULA 24": "RM031-E01P02L004",
-        "RM031#AULA 25": "RM031-E01P02L001",
-        "RM031#AULA 26": "RM031-E01PA2L041",
-        "RM031#AULA 27": "RM031-E01PA2L039",
-        "RM031#AULA 28": "RM031-E01PA2L038",
-        "RM031#AULA 3": "RM031-E01P01L085",
-        "RM031#AULA 30": "RM031-E01PA2L046",
-        "RM031#AULA 32": "RM031-E01PTEL038",
-        "RM031#AULA 4": "RM031-E01PA1L006",
-        "RM031#AULA 42 SEMINARI": "RM031-E01PA2L043",
-        "RM031#AULA 43 BUNKER": "RM031-E01PA2L067",
-        "RM031#AULA 44 DAU CAD": "RM031-E01P02L001",
-        "RM031#AULA 46": "RM031-E01PTEL075",
-        "RM031#AULA 47 - LEUZZI": "RM031-E01P03L026",
-        "RM031#AULA 5": "RM031-E01P01L084",
-        "RM031#AULA 6": "RM031-E01PA1L001",
-        "RM031#AULA 7": "RM031-E01P01L083",
-        "RM031#AULA 8": "RM031-E01P01L082",
-        "RM031#AULA 9": "RM031-E01PA0L011",
-        "RM031#AULA SALA CAVEAU DISG": "RM031-E01PTEL057",
-        "RM031#AULA SALA RIUNIONI N_ 329 DISG": "RM031-E01P04L036_P04L037",
-        "RM031#AULA SISTEMI TRASPORTO E LOGISTICA": "RM031-E01P04L010",
-        "RM031#CENTRO DI CALCOLO - LABORATORIO INFORMATICO - \"PAOLO ERCOLI\"": "RM031-E01PTEL025",
-        "RM031#SALA DEL CHIOSTRO - LAUREE": "RM031-E01P01L038",
-        "RM031#SALA DEL CONSIGLIO": "RM031-E01P02L113",
-        "RM031#SALA LETTURA (DIET)": "RM031-E01P02L031_32",
-        "RM031#STANZA DIET 09": "RM031-E01PA0L010"
-    },
-    
-	"addresses": {
-        "RM041": {
-            "addr": "Centro Studenti",
-            "street-addr": "Via delle Sette Sale, 29"
-        },
-        "RM102": {
-            "addr": "Via Ariosto",
-            "street-addr": "Via Ariosto, 25"
-        },
-        "RM031": {
-            "addr": "S. Pietro in Vincoli - Edificio A",
-            "street-addr": "Via Eudossiana, 18"
-        },
-        "CU006": {
-            "addr": "Matematica G. Castelnuovo Scienze Matematiche Fisiche e Naturali",
-            "street-addr": "Piazzale Aldo Moro, 2"
-        }
-    }
+    ]
+
 }

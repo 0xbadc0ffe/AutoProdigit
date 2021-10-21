@@ -5,6 +5,7 @@ from getpass import getpass
 from time import sleep
 import json
 from urllib.parse import urlencode
+import re
 
 if os.name == "nt":
     CLEAR_STR = "cls" 
@@ -23,15 +24,17 @@ def add_days(date_str,delta):
 def get_date(date_str):
     return date(*[ int(d) for d in date_str.split("/")][::-1])
 
-def makequery(personal_data, booking_data):
+def makequery(personal_data, booking_data, click, iddoc):
 
     pd = personal_data
     bd = booking_data
 
     sched = bd['hours']
 
-    click = "C12585E7003519C8.172ed58cde110161c12585f80042d28d/$Body/1.1EEE"
-    iddoc = "3C0137D0723E44F6C1258767005FCAB6"
+    name = personal_data["name"]
+    surname = personal_data["surname"]
+    CF = personal_data["CF"]
+
     query_form = {
         "__Click":f"{click}",
         "%%Surrogate_codiceedificio":"1",
@@ -77,10 +80,11 @@ def makequery(personal_data, booking_data):
         "SaveOptions":"0",
         "matricola":f"{pd['matricola']}",
         "codicefiscale":f"{pd['CF']}",
+        #"datanasc":"",
         "numerobadge":"",
         "corsodistudio":"",
-        "cognome":f"{pd['surname']}",
-        "nome":f"{pd['name']}",
+        "cognome":f"{surname}",
+        "nome":f"{name}",
         "codicecorso":"",
         "email":f"{pd['email']}",
         "facolta":"",
@@ -132,13 +136,17 @@ def _format_bd(data):
     global siram_codes, addresses, classrooms
 
     try:
-        siram = ""
         if data['classroom'] not in classrooms[data['building']]:
-            print(f"\nWarning: unlisted classroom \"{data['classroom']}\", be sure to use the EXACT same name used in Prodigit")
+            print(f"\nError: unlisted classroom \"{data['classroom']}\" in {data['building']}, be sure to use the EXACT same name used in Prodigit")
+            input("\nPress Enter to exit")
+            close()
         else:
             siram = siram_codes[data["building"]+"#"+data["classroom"]]
     except KeyError:
-        print(f"\nWarning: unlisted building code \"{data['building']}\", be sure to use the EXACT same name used in Prodigit")
+        print(f"\nError: unlisted building code \"{data['building']}\" in {data['building']}, be sure to use the EXACT same name used in Prodigit")
+        input("\nPress Enter to exit")
+        close()
+
 
     days = set(["lun", "mar", "mer", "gio", "ven", "sab"]) # TODO: MON TUE WED THU FRI SAT ?
     for day in data["hours"]:
@@ -159,40 +167,17 @@ def _format_bd(data):
     for day in list(days):
         data["hours"][day] = ["--:--", "--:--"]
 
-    # If siram not present or different from the right one (if present into the config.json list)
-    if data["siram"] == "" or (siram != "" and data["siram"] != siram):
-        try:
-            data["siram"] = siram
-        except KeyError:
-            print("\nUnlisted Siram code or wrong classroom/building code")
-            print("\nPlease check in the following link and add the correct siram code into cofig.json")
-            print("\nhttps://gomp.uniroma1.it/PublicFunctions/GestioneAule/SchedaOrarioProgrammazione.aspx\n")
-            input("\n\npress Enter to go on...\n\n")
+    # Set Siram code
+    data["siram"] = siram
 
     # Set the week data to next monday
     today = date.today()
-    if data["week"] == "" or get_date(data["week"]) < today:
-        data["week"] = next_weekday(today).strftime("%d/%m/%Y")
+    data["week"] = next_weekday(today).strftime("%d/%m/%Y")
 
-    # Set the building complex name and street-address if present on the config.json list   
-    if data["building"]!="":
-        try:
-            data["addr"] = addresses[data["building"]]["addr"]
-            data["street-addr"]= addresses[data["building"]]["street-addr"]
-        except KeyError:
-            print(f"\nWarning: unlisted address (bulding complex name) and street address for \"{data['building']}\"")
-
-    '''
-    # The previous do not allow to set a different addresses then the real one (if listed)
-    # This, instead, allow it.
-    if data["addr"] == "" or data["street-addr"] == "" and data["building"]!="":
-        try:
-            data["addr"] = addresses[data["building"]]["addr"]
-            data["street-addr"]= addresses[data["building"]]["street-addr"]
-        except KeyError:
-            print(f"\nWarning: unlisted address (bulding complex name) and street address for \"{data['building']}\"")
-    '''
-
+    # Set the building complex name and street-address if present on the boudling-info.json list   
+    data["addr"] = addresses[data["building"]]["addr"]
+    data["street-addr"]= addresses[data["building"]]["street-addr"]
+        
 
 
 # format some fields of a personal_data dictionary
@@ -214,11 +199,12 @@ def close(timesl=1):
     exit()
 
 
-booking_dict = {
-            "classroom": "",
-            "building": "",
-            "week": "",
-            "siram": "",
+def void_req(s, personal_data, iddoc ):
+    book = {
+            "classroom": "AULA A3",
+            "building": "RM102",
+            "week": "25/10/2021",
+            "siram": "RM102-E01PR1L008",
             "hours": {
                 "lun": [
                     "--:--",
@@ -248,21 +234,179 @@ booking_dict = {
             "addr": "",
             "street-addr": ""
         }
+    r = s.post(book_url, data=makequery(personal_data, book, click="$Refresh", iddoc=iddoc), timeout=5)
+    return r
+
+
+# Retrieves some session and user data
+def get_data(s):
+
+    try:
+        r = s.get(book_url, timeout=5)
+        #print(r.text)
+        #input()
+    except requests.exceptions.RequestException as e:
+        print(f"\nError in connection with Prodigit\n")
+        print(e)
+
+    click_mark = "\_doClick\(\'[^$][^\']+\'\,"
+    m = re.search(click_mark, r.text)
+    if m is not None:
+        click = m.group(0)[10:-2]
+        #print(f"Click: {click}")
+        #click = click[:-4]+"1EEE"
+        #print(f"Click: {click}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        input("\n\nPress Enter to exit\n\n")
+        close()
+
+
+    cf_mark = "<input name=\"codicefiscale\" type=\"hidden\" value=\"[^\"]+"
+    m = re.search(cf_mark, r.text)
+    if m is not None:
+        cf = m.group(0)[49:]
+        #print(f"CF: {cf}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        if personal_data["CF"] == "":
+            input("\n\nPress Enter to exit\n\n")
+            close()
+
+
+    iddoc_mark = "<input name=\"iddoc\" type=\"hidden\" value=\"[^\"]+"
+    m = re.search(iddoc_mark, r.text)
+    if m is not None:
+        iddoc = m.group(0)[41:]
+        #print(f"iddoc: {iddoc}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        input("\n\nPress Enter to exit\n\n")
+        close()
+
+    surname_mark = "<input name=\"cognome\" type=\"hidden\" value=\"[^\"]+"
+    m = re.search(surname_mark, r.text)
+    if m is not None:
+        surname = m.group(0)[43:]
+        #print(f"Surname: {surname}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        input("\n\nPress Enter to exit\n\n")
+        close()
+
+    name_mark = "<input name=\"nome\" type=\"hidden\" value=\"[^\"]+"
+    m = re.search(name_mark, r.text)
+    if m is not None:
+        name = m.group(0)[40:]
+        #print(f"Name: {name}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        input("\n\nPress Enter to exit\n\n")
+        close()
+
+    per_data = {      
+        "CF": cf,
+        "name": name,
+        "surname": surname,
+    }
+
+    _format_pd2(personal_data, per_data)
+    r = void_req(s, personal_data, iddoc)
+    click_mark = "\_doClick\(\'[^$][^\']+\'\,"
+    m = re.search(click_mark, r.text)
+    if m is not None:
+        click = m.group(0)[10:-2]
+        #print(f"\nClick: {click}")
+    else:
+        print(f"\nError in retrieving data from Prodigit\n")
+        input("\n\nPress Enter to exit\n\n")
+        close()
+
+    active_mark = "Le prenotazioni delle aule per le lezioni non sono attive"
+    if active_mark in r.text:
+        active = False
+        #print(r.text)
+        #input()
+    else:
+        active = True
+
+    data = {
+        "click": click,
+        "CF": cf,
+        "iddoc": iddoc,
+        "active": active,
+        "name": name,
+        "surname": surname,
+    }
+
+    return data
+    
+
+# format some fields of a personal_data dictionary
+def _format_pd2(personal_data, s_data):
+
+    mat = personal_data["matricola"]
+    personal_data["range-mat"] = str(round(float("0."+mat[-2:]))*50)+"-"+str(round(float("0."+mat[-2:]))*50+49)
+
+    personal_data["email"] = f"{s_data['surname'].lower()}.{personal_data['matricola']}@studenti.uniroma1.it"
+
+    personal_data["surname"] = s_data["surname"]
+    personal_data["name"] = s_data["name"]
+    personal_data["CF"] = s_data["CF"]
+
+
+booking_dict = {
+            "classroom": "",
+            "building": "",
+            "hours": {
+                "lun": [
+                    "--:--",
+                    "--:--"
+                ],
+                "mar": [
+                    "--:--",
+                    "--:--"
+                ],
+                "mer": [
+                    "--:--",
+                    "--:--"
+                ],
+                "gio": [
+                    "--:--",
+                    "--:--"
+                ],
+                "ven": [
+                    "--:--",
+                    "--:--"
+                ],
+                "sab": [
+                    "--:--",
+                    "--:--"
+                ]
+            }
+        }
 
 if __name__=="__main__":
 
     clear()
 
     json_file_name = "config.json"
+    buildings_info_json = "buildings-info.json"
     SLEEP_TIME = 0.5
+    
 
     with open(json_file_name, "r") as jfile:
         config_data = json.load(jfile)
 
+    with open(buildings_info_json, "r") as jfile:
+        buildings_info = json.load(jfile)
+
     personal_data = config_data["personal_data"]
     bookings = config_data["booking_list"]
-    siram_codes = config_data["siram_codes"]
-    addresses = config_data["addresses"]
+    siram_codes = buildings_info["siram_codes"]
+    addresses = buildings_info["addresses"]
+    class_list = buildings_info["classrooms"]
+    buildings_list = buildings_info["buildings"]
 
     
     classrooms = {}
@@ -272,12 +416,12 @@ if __name__=="__main__":
         classrooms[key.split("#")[0]].append(key.split("#")[1])
 
 
-    _format_pd(personal_data)
-
-
-
     url = "https://prodigit.uniroma1.it"
     book_url = "https://prodigit.uniroma1.it/prenotazioni/prenotaaule.nsf/prenotaposto-in-aula?"
+    
+    # User Agent
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+    headers = {'User-Agent': user_agent}
 
 
 
@@ -287,20 +431,26 @@ if __name__=="__main__":
     }
 
 
-    pass_not_setted = login_data['Password'] == ""
-    if pass_not_setted:
+    user_not_setted = login_data['Username'] == ""
+    if user_not_setted:
+        login_data['Username'] = input("\nMatricola: ").strip()
+    else:
         print(f"\nMatricola: {login_data['Username']}")
+
+    pass_not_setted = login_data['Password'] == ""
+    if pass_not_setted: 
         login_data["Password"] = getpass("Password: ")
         #login_data["Password"] = input("Password: ") # if you prefer to not hide password entry
         clear()
 
 
     with requests.Session() as s:
-
+        s.headers.update(headers)
         # Login
         try:
             clear()
             r = s.post(url+"/names.nsf?Login", data=login_data, timeout=5)
+            #print(r.text)
             if "Autenticazione non effettuata" in r.text:
                 print("\nAccess Failed\n")               
                 input("\n\nPress Enter to exit\n\n")
@@ -312,6 +462,22 @@ if __name__=="__main__":
                 print(f"\nError in Login\n")
                 print(e)
 
+
+        # Retrieving some session and user data
+        s_data = get_data(s) 
+        # format data
+        _format_pd2(personal_data, s_data)
+
+        # Checking booking availability. Not avaible for now since not stable
+        '''
+        if not s_data["active"]:
+            clear()
+            print("\n\n    ,(t.t),(t.t),(t.t),(t.t),(t.t),(t.t),\n    ,(t.t),                       ,(t.t),\n    ,(t.t), Booking not available ,(t.t),\n    ,(t.t),                       ,(t.t),\n    ,(t.t),(t.t),(t.t),(t.t),(t.t),(t.t),")
+            #print("\nBooking not available ,(t.t),")
+            input("\n\nPress Enter to exit\n\n")
+            close()
+        '''
+
         # Bookings
         for booking_data in bookings:
             try:
@@ -319,12 +485,17 @@ if __name__=="__main__":
                     continue
                 clear()
                 _format_bd(booking_data)
-                r = s.post(book_url, data=makequery(personal_data,booking_data), timeout=5)
+                r = s.post(book_url, data=makequery(personal_data, booking_data, click=s_data["click"], iddoc=s_data["iddoc"]), timeout=5)
+                #print(makequery(personal_data, booking_data, click=s_data["click"], iddoc=s_data["iddoc"]))
+                #print("\n\n\n\n")
+                #print(r.text)
+                #input()
+                
                 if "PRENOTAZIONI EFFETTUATE" in r.text:
                     print(f"\nReservation successfully made for {booking_data['classroom']} at {booking_data['building']}\n")
 
                 elif "Sovrapposizione in data" in r.text:
-                    print(f"\nReservation already present (or partially) for {booking_data['classroom']} at {booking_data['building']}\n")
+                    print(f"\nReservation already (or partially) present for {booking_data['classroom']} at {booking_data['building']}\n")
 
                 else:
                     print(f"\nError in reservation for {booking_data['classroom']} at {booking_data['building']}\n")
@@ -333,18 +504,6 @@ if __name__=="__main__":
             except requests.exceptions.RequestException as e:
                 print(f"\nError in reservation\n")
                 print(e)
-
-
-    # Reset the password if it were not originally written in config.json
-    if pass_not_setted:
-        personal_data["password"] = ""
-
-    # Append another "vanilla" booking_dict to the bookings dictionary in config.json
-    if bookings[-1]["classroom"] != "":
-        bookings.append(booking_dict)
-
-    with open(json_file_name, "w+") as jfile:
-        json.dump(config_data, jfile, indent=4)
 
 
     input("\n\nPress Enter to exit\n\n")
