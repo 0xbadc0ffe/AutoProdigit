@@ -42,10 +42,7 @@ or, if you have also `python2` on your OS:
 1. Open it with whichever text editor you have.
 
 2. Set your `personal_data`:<br /><br />
-       It is mandatory to set the `matricola`, `name`, `surname`, `fiscal code` aka `CF`.
-       The others, excluding the `password` field, will be recovered automatically by these after the first execution.
-       The `range-mat` field has values "0-49" or "50-99" depending on the last two numbers of the `matricola` field.
-       The `email` has to be the istitutional one given by La Sapienza.
+       If you don't want to be asked every time about your `matricola`, you can set it there!
        As for the  `password` field, **PLEASE DO NOT SET IT IF NOT NECESSARY**.
        The  `password` will be asked by the program at each execution so there is no problem for the login. 
        The only possible purpose of setting the `password` field into `config.json` is to automatically run (like with a Task Scheduler or something) the program.
@@ -59,8 +56,6 @@ or, if you have also `python2` on your OS:
        {
             "classroom": "",
             "building": "",
-            "week": "",
-            "siram": "",
             "hours": {
                 "lun": [
                     "--:--",
@@ -86,28 +81,18 @@ or, if you have also `python2` on your OS:
                     "--:--",
                     "--:--"
                 ]
-            },
-            "addr": "",
-            "street-addr": ""
+            }
         }
         <br /> <br />
         represents a reservation for a classroom. 
         For each of this reservations, the mandatory fields are the **exact** `classroom` name present on Prodigit 
         (there is some strange stuff like "AULA A3" -> **"AULA A 4"** -> "AULA A6", so beware the spaces and stuff like that),
         the `building` code (like RM031, CU001, ... ) and obviusly the time ranges of interest in the `hours` section.
-        The `week` field can be recovered automatically (to next monday) and represent the week of interest (using its monday day in format d/m/yyyy).
         <br /><br />
-        The `siram`, `addr` and `street-addr` can be recovered automatically if listed in the fields `siram_codes` and `addresses` 
-        (and if the `classroom` name and `building` code are correct) so you can leave them blank if you see them there.
-        If not, you have to manually add the `siram` code to the reservation OR to the `siram_codes` list. 
-        You can check for the `siram` codes on Prodigit or [here](https://gomp.uniroma1.it/PublicFunctions/GestioneAule/SchedaOrarioProgrammazione.aspx).
-        Also the `addr` and `street-addr` fields represent respectively "Sede" and "Ubicazione" on Prodigit and those already listed are found in the `addresses` field. 
-        If needed, I will add more of them in the default `config.json`.<br /> <br />
-        As for multiple reservation on the same day for the same class, you need to set multiple reservations (like with original Prodigit) into the `config.json` file, 
+         As for multiple reservation on the same day for the same class, you need to set multiple reservations (like with original Prodigit) into the `config.json` file, 
         this could change in future updates of this repository.
         <br /><br />
-        Please note that the `week` field automatically updates itself to the following monday when needed, so there's no need to touch it each week. 
-        Once you have setup properly the `config.json` just run the program each weekend and you'll be fine.
+         
 
         
  ## Usage - Italian
